@@ -1,0 +1,81 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: mushroom-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mushroom_farm
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mqtt-broker:
+    image: eclipse-mosquitto:2
+    container_name: mushroom-mqtt
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./deployment/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./deployment/mosquitto/data:/mosquitto/data
+      - ./deployment/mosquitto/log:/mosquitto/log
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mushroom-backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env.docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mqtt-broker:
+        condition: service_started
+    ports:
+      - "4010:4010"
+
+  ai-camera:
+    build:
+      context: ./ai-camera-monitoring
+      dockerfile: Dockerfile
+    container_name: mushroom-ai-camera
+    restart: unless-stopped
+    environment:
+      CAMERA_SOURCE: "0"
+      YOLO_MODEL: "yolov8n.pt"
+      MQTT_HOST: mqtt-broker
+      MQTT_PORT: "1883"
+      FARM_ID: mushroom-farm-a1
+      CAMERA_ID: camera-zone-a
+      ALERT_TOPIC: farm/mushroom-farm-a1/camera-zone-a/ai/alerts
+      EVENT_TOPIC: farm/mushroom-farm-a1/camera-zone-a/ai/events
+    depends_on:
+      - mqtt-broker
+    volumes:
+      - ./ai-camera-monitoring/outputs:/app/outputs
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mushroom-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+
+volumes:
+  postgres_data:

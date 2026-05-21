@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Rajdhani:wght@500;600;700&display=swap');
+@import 'tailwindcss';
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font-family: 'IBM Plex Mono', monospace;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(6, 182, 212, 0.15), transparent 38%),
+    radial-gradient(circle at 88% 0%, rgba(52, 211, 153, 0.16), transparent 30%),
+    #030712;
+  color: #e4e4e7;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(170%);
+  }
+}
+
+@layer utilities {
+  .bg-cyber-grid {
+    background-image:
+      linear-gradient(rgba(63, 63, 70, 0.15) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(63, 63, 70, 0.15) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .panel-base {
+    @apply relative overflow-hidden rounded-2xl border border-zinc-800/90 bg-zinc-900/60 p-4 shadow-[0_12px_30px_-20px_rgba(6,182,212,0.3)] sm:p-5;
+    animation: rise-in 450ms ease both;
+  }
+
+  .panel-base::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.9), transparent);
+    animation: sweep 4.8s linear infinite;
+  }
+
+  .card-base {
+    @apply relative overflow-hidden rounded-2xl border bg-zinc-900/65 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_28px_-24px_rgba(56,189,248,0.75)];
+    animation: rise-in 420ms ease both;
+  }
+
+  .top-pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900/70 px-3 py-1.5 text-xs text-zinc-300;
+  }
+}

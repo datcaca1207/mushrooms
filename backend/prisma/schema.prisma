@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  OPERATOR
+  VIEWER
+}
+
+enum Operator {
+  LT
+  LTE
+  GT
+  GTE
+  EQ
+  NEQ
+}
+
+enum AlertLevel {
+  INFO
+  WARNING
+  DANGER
+}
+
+enum AlertChannel {
+  TELEGRAM
+  ZALO
+  SMS
+  SYSTEM
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  fullName     String
+  passwordHash String
+  role         Role     @default(VIEWER)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Sensor {
+  id         String          @id @default(uuid())
+  zoneId     String?
+  name       String
+  metric     String
+  unit       String
+  topic      String          @unique
+  location   String?
+  isActive   Boolean         @default(true)
+  lastValue  Float?
+  lastSeenAt DateTime?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  zone       Zone?           @relation(fields: [zoneId], references: [id])
+  readings   SensorReading[]
+}
+
+model SensorReading {
+  id         String   @id @default(uuid())
+  sensorId   String
+  value      Float
+  rawPayload Json?
+  createdAt  DateTime @default(now())
+  sensor     Sensor   @relation(fields: [sensorId], references: [id], onDelete: Cascade)
+
+  @@index([sensorId, createdAt])
+}
+
+model Device {
+  id          String   @id @default(uuid())
+  zoneId      String?
+  name        String
+  key         String   @unique
+  topic       String   @unique
+  status      String   @default("OFF")
+  isOnline    Boolean  @default(false)
+  autoEnabled Boolean  @default(true)
+  lastSeenAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  zone        Zone?    @relation(fields: [zoneId], references: [id])
+}
+
+model AutomationRule {
+  id                String   @id @default(uuid())
+  name              String
+  enabled           Boolean  @default(true)
+  metric            String
+  operator          Operator
+  threshold         Float
+  actionDeviceKey   String
+  actionCommand     String
+  cooldownSeconds   Int      @default(60)
+  lastTriggeredAt   DateTime?
+  notificationLevel AlertLevel @default(WARNING)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Camera {
+  id             String   @id @default(uuid())
+  zoneId         String?
+  name           String
+  streamUrl      String
+  location       String?
+  aiEnabled      Boolean  @default(true)
+  lastDetection  String?
+  diseaseRiskPct Float?   @default(0)
+  isOnline       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  zone           Zone?    @relation(fields: [zoneId], references: [id])
+}
+
+model Zone {
+  id          String   @id @default(uuid())
+  name        String
+  code        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  sensors     Sensor[]
+  devices     Device[]
+  cameras     Camera[]
+}
+
+model AlertLog {
+  id        String       @id @default(uuid())
+  level     AlertLevel
+  channel   AlertChannel
+  title     String
+  message   String
+  metadata  Json?
+  sent      Boolean      @default(false)
+  createdAt DateTime     @default(now())
+}
