@@ -1,4 +1,8 @@
+import { useTranslation } from '../i18n.jsx'
+
 export function ModeToggle({ modeAuto, onToggle }) {
+  const t = useTranslation()
+
   return (
     <button
       type="button"
@@ -14,8 +18,8 @@ export function ModeToggle({ modeAuto, onToggle }) {
           modeAuto ? 'translate-x-0 bg-cyan-500/25' : 'translate-x-[86px] bg-amber-500/25'
         }`}
       />
-      <span className="relative z-10 w-1/2 text-xs font-medium uppercase tracking-[0.18em]">Auto</span>
-      <span className="relative z-10 w-1/2 text-xs font-medium uppercase tracking-[0.18em]">Manual</span>
+      <span className="relative z-10 w-1/2 text-xs font-medium uppercase tracking-[0.18em]">{t('mode.auto')}</span>
+      <span className="relative z-10 w-1/2 text-xs font-medium uppercase tracking-[0.18em]">{t('mode.manual')}</span>
     </button>
   )
 }

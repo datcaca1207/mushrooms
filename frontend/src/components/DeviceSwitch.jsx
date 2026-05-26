@@ -1,6 +1,8 @@
 import { Power } from 'lucide-react'
+import { useTranslation } from '../i18n.jsx'
 
 export function DeviceSwitch({ label, enabled, modeAuto, onToggle, online }) {
+  const t = useTranslation()
   const friendlyName = label.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase())
   const switchDisabled = modeAuto || !online
 
@@ -14,7 +16,7 @@ export function DeviceSwitch({ label, enabled, modeAuto, onToggle, online }) {
           }`}
         >
           <span className={`h-1.5 w-1.5 rounded-full ${online ? 'bg-emerald-400' : 'bg-rose-400'}`} />
-          {online ? 'ONLINE' : 'OFFLINE'}
+          {online ? t('device.online') : t('device.offline')}
         </span>
       </div>
       <button
@@ -27,7 +29,7 @@ export function DeviceSwitch({ label, enabled, modeAuto, onToggle, online }) {
         onClick={onToggle}
         disabled={switchDisabled}
       >
-        <span>{enabled ? 'On' : 'Off'}</span>
+        <span>{enabled ? t('device.on') : t('device.off')}</span>
         <Power size={14} />
       </button>
     </div>

@@ -18,6 +18,7 @@ import { CameraMonitor } from './components/CameraMonitor'
 import { AlertsPanel } from './components/AlertsPanel'
 import { SensorChart } from './components/charts/SensorChart'
 import { useMockFarmData } from './hooks/useMockFarmData'
+import { useTranslation } from './i18n.jsx'
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -35,16 +36,17 @@ function App() {
     toggleDevice,
     acknowledgeAlert,
   } = useMockFarmData()
+  const t = useTranslation()
 
   const navItems = useMemo(
     () => [
-      { label: 'Overview', icon: LayoutDashboard, active: true },
-      { label: 'Control Panel', icon: SlidersHorizontal },
-      { label: 'Camera AI', icon: Camera },
-      { label: 'Analytics', icon: BarChart3 },
-      { label: 'Alerts', icon: AlertTriangle },
+      { label: t('nav.overview'), icon: LayoutDashboard, active: true },
+      { label: t('nav.controlPanel'), icon: SlidersHorizontal },
+      { label: t('nav.cameraAI'), icon: Camera },
+      { label: t('nav.analytics'), icon: BarChart3 },
+      { label: t('nav.alerts'), icon: AlertTriangle },
     ],
-    [],
+    [t],
   )
 
   const onlineDevices = Object.values(connectivity).filter(Boolean).length
@@ -80,44 +82,44 @@ function App() {
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
             <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
               <MetricCard
-                label="Temperature"
+                label={t('metric.temperature')}
                 value={`${metrics.temperature.toFixed(1)}°C`}
-                delta={metrics.temperature > 26 ? 'High' : 'Stable'}
+                delta={metrics.temperature > 26 ? t('metric.high') : t('metric.stable')}
                 status={metrics.temperature > 26 ? 'warning' : 'ok'}
                 icon={Activity}
               />
               <MetricCard
-                label="Humidity"
+                label={t('metric.humidity')}
                 value={`${metrics.humidity.toFixed(1)}%`}
-                delta={metrics.humidity < 75 ? 'Low' : 'Optimal'}
+                delta={metrics.humidity < 75 ? t('metric.low') : t('metric.optimal')}
                 status={metrics.humidity < 75 ? 'warning' : 'ok'}
                 icon={Activity}
               />
               <MetricCard
-                label="CO2"
+                label={t('metric.co2')}
                 value={`${Math.round(metrics.co2)} ppm`}
-                delta={metrics.co2 > 1050 ? 'Rising' : 'Normal'}
+                delta={metrics.co2 > 1050 ? t('metric.rising') : t('metric.normal')}
                 status={metrics.co2 > 1050 ? 'danger' : 'ok'}
                 icon={Cpu}
               />
               <MetricCard
-                label="Water Level"
+                label={t('metric.waterLevel')}
                 value={`${metrics.waterLevel.toFixed(1)}%`}
-                delta={metrics.waterLevel < 25 ? 'Refill Needed' : 'Sufficient'}
+                delta={metrics.waterLevel < 25 ? t('metric.refillNeeded') : t('metric.sufficient')}
                 status={metrics.waterLevel < 25 ? 'danger' : 'ok'}
                 icon={Activity}
               />
               <MetricCard
-                label="Device Network"
+                label={t('metric.deviceNetwork')}
                 value={`${onlineDevices}/${totalDevices}`}
-                delta={onlineDevices === totalDevices ? 'Online' : 'Partial'}
+                delta={onlineDevices === totalDevices ? t('metric.online') : t('metric.partial')}
                 status={onlineDevices === totalDevices ? 'ok' : 'warning'}
                 icon={Cpu}
               />
               <MetricCard
-                label="AI Monitoring"
+                label={t('metric.aiMonitoring')}
                 value={aiStatus.toUpperCase()}
-                delta={camera.diseaseRisk > 68 ? 'Potential Risk' : 'Tracking'}
+                delta={camera.diseaseRisk > 68 ? t('metric.potentialRisk') : t('metric.tracking')}
                 status={camera.diseaseRisk > 68 ? 'warning' : 'ok'}
                 icon={Camera}
               />
@@ -128,8 +130,8 @@ function App() {
                 <div className="panel-base">
                   <div className="mb-5 flex items-center justify-between gap-3">
                     <div>
-                      <h2 className="text-lg font-semibold tracking-wide text-zinc-100">Device Control Panel</h2>
-                      <p className="text-sm text-zinc-400">SCADA command interface for core actuators</p>
+                      <h2 className="text-lg font-semibold tracking-wide text-zinc-100">{t('panel.controlPanel')}</h2>
+                      <p className="text-sm text-zinc-400">{t('panel.scada')}</p>
                     </div>
                     <ModeToggle modeAuto={modeAuto} onToggle={toggleMode} />
                   </div>
@@ -150,9 +152,9 @@ function App() {
 
                 <div className="panel-base">
                   <div className="mb-5 flex items-center justify-between gap-2">
-                    <h2 className="text-lg font-semibold tracking-wide text-zinc-100">Realtime Sensor Streams</h2>
+                    <h2 className="text-lg font-semibold tracking-wide text-zinc-100">{t('panel.realtime')}</h2>
                     <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
-                      <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> LIVE
+                      <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> {t('panel.live')}
                     </span>
                   </div>
 

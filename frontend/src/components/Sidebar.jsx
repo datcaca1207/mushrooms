@@ -1,4 +1,5 @@
 import { CircleDot, Leaf, RadioTower, X } from 'lucide-react'
+import { useTranslation } from '../i18n.jsx'
 
 export function Sidebar({ navItems, connectivity, open, onClose }) {
   const linkClasses = (active) =>
@@ -8,10 +9,12 @@ export function Sidebar({ navItems, connectivity, open, onClose }) {
         : 'border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:border-zinc-700 hover:text-zinc-100'
     }`
 
+  const t = useTranslation()
+
   return (
     <>
       <aside className="hidden w-[280px] shrink-0 flex-col border-r border-zinc-800/80 bg-zinc-950/80 p-5 lg:flex">
-        <SidebarContent navItems={navItems} connectivity={connectivity} linkClasses={linkClasses} />
+        <SidebarContent navItems={navItems} connectivity={connectivity} linkClasses={linkClasses} t={t} />
       </aside>
 
       <div
@@ -34,13 +37,13 @@ export function Sidebar({ navItems, connectivity, open, onClose }) {
         >
           <X size={16} />
         </button>
-        <SidebarContent navItems={navItems} connectivity={connectivity} linkClasses={linkClasses} />
+        <SidebarContent navItems={navItems} connectivity={connectivity} linkClasses={linkClasses} t={t} />
       </aside>
     </>
   )
 }
 
-function SidebarContent({ navItems, connectivity, linkClasses }) {
+function SidebarContent({ navItems, connectivity, linkClasses, t }) {
   const connected = Object.values(connectivity).filter(Boolean).length
   const total = Object.keys(connectivity).length
 
@@ -52,8 +55,8 @@ function SidebarContent({ navItems, connectivity, linkClasses }) {
             <Leaf className="text-cyan-300" size={18} />
           </div>
           <div>
-            <p className="text-xs uppercase tracking-[0.22em] text-cyan-300/90">Smart Farm</p>
-            <h1 className="font-['Rajdhani'] text-xl font-semibold tracking-wide text-zinc-100">Mushroom Nexus</h1>
+            <p className="text-xs uppercase tracking-[0.22em] text-cyan-300/90">{t('labels.smartFarm')}</p>
+            <h1 className="font-['Rajdhani'] text-xl font-semibold tracking-wide text-zinc-100">{t('labels.mushroomNexus')}</h1>
           </div>
         </div>
       </div>
@@ -70,7 +73,7 @@ function SidebarContent({ navItems, connectivity, linkClasses }) {
       <div className="mt-auto rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4">
         <div className="mb-2 flex items-center justify-between text-sm text-zinc-300">
           <span className="inline-flex items-center gap-2">
-            <RadioTower size={14} /> Network
+            <RadioTower size={14} /> {t('sidebar.network')}
           </span>
           <span className="font-medium text-cyan-300">{connected}/{total}</span>
         </div>
@@ -82,7 +85,7 @@ function SidebarContent({ navItems, connectivity, linkClasses }) {
         </div>
         <p className="mt-3 inline-flex items-center gap-2 text-xs text-zinc-400">
           <CircleDot size={12} className="text-emerald-400" />
-          Industrial control bus synchronized
+          {t('sidebar.industrial')}
         </p>
       </div>
     </>

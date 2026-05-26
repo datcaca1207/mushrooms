@@ -1,6 +1,8 @@
 import { AlertTriangle, Camera, ScanSearch, Sprout } from 'lucide-react'
+import { useTranslation } from '../i18n.jsx'
 
 export function CameraMonitor({ camera, aiStatus }) {
+  const t = useTranslation()
   const riskTone =
     camera.diseaseRisk > 68
       ? 'text-rose-300 border-rose-500/40 bg-rose-500/10'
@@ -9,9 +11,9 @@ export function CameraMonitor({ camera, aiStatus }) {
   return (
     <section className="panel-base">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold tracking-wide text-zinc-100">Camera AI Monitoring</h2>
+        <h2 className="text-lg font-semibold tracking-wide text-zinc-100">{t('camera.title')}</h2>
         <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-1 text-xs text-cyan-300">
-          <Camera size={12} /> LIVE
+          <Camera size={12} /> {t('panel.live')}
         </span>
       </div>
 
@@ -20,19 +22,19 @@ export function CameraMonitor({ camera, aiStatus }) {
         <div className="relative grid h-44 place-items-center rounded-lg border border-cyan-700/30 bg-zinc-950">
           <div className="h-20 w-20 animate-pulse rounded-full border border-cyan-600/30 bg-cyan-500/10" />
           <p className="absolute bottom-3 text-xs uppercase tracking-[0.16em] text-zinc-400">
-            Cam-02 | Mycelium Bay
+            {t('camera.camLabel')}
           </p>
         </div>
       </div>
 
       <div className="space-y-2 text-sm">
-        <InfoRow icon={ScanSearch} label="AI Detection" value={camera.lastDetection} />
-        <InfoRow icon={Sprout} label="Growth Stage" value={camera.growthStage} />
-        <InfoRow icon={AlertTriangle} label="AI Engine" value={aiStatus.toUpperCase()} />
+        <InfoRow icon={ScanSearch} label={t('camera.aiDetection')} value={camera.lastDetection} />
+        <InfoRow icon={Sprout} label={t('camera.growthStage')} value={camera.growthStage} />
+        <InfoRow icon={AlertTriangle} label={t('camera.aiEngine')} value={aiStatus.toUpperCase()} />
       </div>
 
       <div className={`mt-4 rounded-xl border px-3 py-2 text-sm ${riskTone}`}>
-        Disease Risk Alert: {camera.diseaseRisk}%
+        {t('camera.diseaseRisk')}: {camera.diseaseRisk}%
       </div>
     </section>
   )
